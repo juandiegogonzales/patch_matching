@@ -18,7 +18,7 @@ class ConvBlock(tf.keras.layers.Layer):
             )
         self._bnorm = tf.keras.layers.BatchNormalization()
 
-    def call(self, x):
+    def call(self, x, training=True):
         out = self._conv(x)
         out = self._bnorm(out)
         return out

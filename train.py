@@ -5,7 +5,7 @@ from data import PatchTrainDataset, PatchValDataset
 import logging
 logging.basicConfig(level=logging.DEBUG)
 matching_model = PatchMatchingModel()
-optimizer = tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)
+optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
 loss_fn = tfa.losses.ContrastiveLoss()
 
 db_train = PatchTrainDataset()
@@ -40,6 +40,7 @@ def val_step(patch_1, patch_2,labels):
 
 
 for epoch in range(NUM_EPOCHS):
+    tf.keras.backend.set_learning_phase(1)
     for patch_1, patch_2, labels in db_train.db:
         total_loss = train_step(patch_1, patch_2, labels)
         NUM_STEPS+=1    
@@ -47,6 +48,7 @@ for epoch in range(NUM_EPOCHS):
             logging.info('Training : Epoch = {}; steps = {}; Loss = {:.4f}'.format(epoch+1, NUM_STEPS,total_loss))
     manager.save()
     logging.info('Epoch {} training finished. Now doing validation.'.format(epoch+1))
+    tf.keras.backend.set_learning_phase(0)
     for patch_1, patch_2, labels in db_val.db:
         val_step(patch_1,patch_2, labels)
         STEPS_VAL+=1

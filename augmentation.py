@@ -43,8 +43,8 @@ def normalize_patches(patch_1, patch_2):
     patch_1 = patch_1/255.0
     patch_2 = patch_2/255.0
     patch_1*=2.0
-    patch_2*=2.9
-    patch_1 = patch_1 -1
+    patch_2*=2.0
+    patch_1 = patch_1 - 1
     patch_2 = patch_2 - 1
     return patch_1, patch_2
 
