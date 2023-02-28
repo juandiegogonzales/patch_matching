@@ -257,12 +257,15 @@ class PatchTestDataset(object):
     def __init__(self,
                  file_1 : str,
                  file_2 : str,
-                 batch_size : int = 8
+                 batch_size : int = 1
                  ):
         image_1, image_2 = self._read_fn([file_1, file_2])
         self.image_1 = image_1
         self.image_2 = image_2
-        patches = tf.nest.map_structure(tf.stop_gradient,tf.map_fn(lambda x : self.extract_patches(x), elems=(self.ROWS,self.COLS), fn_output_signature=(tf.uint8, tf.uint8)))
+        patches = tf.nest.map_structure(tf.stop_gradient,
+                                        tf.map_fn(lambda x : self.extract_patches(x),
+                                                  elems=(self.ROWS,self.COLS),
+                                                  fn_output_signature=(tf.uint8, tf.uint8)))
         self._db = tf.data.Dataset.from_tensor_slices((patches,self.ROWS,self.COLS))
         print(self.db.element_spec)
         self._db = self._db.cache()
@@ -276,8 +279,8 @@ class PatchTestDataset(object):
         return self._db
 
     def extract_patches(self,coord):
-        patch_1 = tf.slice(self.image_1, [coord[0],coord[1],0],[512,512,3])
-        patch_2 = tf.slice(self.image_2, [coord[0], coord[1],0],[512,512,3])
+        patch_1 = tf.slice(self.image_1, [coord[0], coord[1], 0], [512,512,3])
+        patch_2 = tf.slice(self.image_2, [coord[0], coord[1], 0], [512,512,3])
         return patch_1, patch_2
 
     @staticmethod
